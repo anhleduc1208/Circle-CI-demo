@@ -28,6 +28,15 @@ jobs:
       - attach_workspace:
           at: ~/
       - run: cat ~/output.txt
+  intentional_fail:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - run: return 1
+      - run:
+          name: On Error
+          command: echo "Hello Error!"
+          when: on_fail
 workflows:
   # Name the workflow "welcome"
   welcome:
@@ -38,3 +47,6 @@ workflows:
       - print_output_file:
           requires:
             - save_hello_world_output
+      - intentional_fail:
+          requires:
+            - print_output_file
